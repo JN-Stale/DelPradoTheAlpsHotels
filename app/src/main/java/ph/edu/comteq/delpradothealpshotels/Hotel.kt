@@ -7,3 +7,4 @@ data class Hotel(
     val hotel_to_ski_distance: Double,
     val hotel_cover_image: String
 )
+
