@@ -112,8 +112,11 @@ class MainActivity : ComponentActivity() {
                         val hotelId = backStackEntry.arguments?.getInt("hotelId") ?: return@composable
                         val roomId = backStackEntry.arguments?.getInt("roomId") ?: return@composable
 
-                        // Temporary placeholder.
-                        Text("Hotel $hotelId, Room $roomId")
+                        BookConfirmScreen(
+                            hotelId = hotelId,
+                            roomId = roomId,
+                            onBack = { navController.popBackStack() }
+                        )
                     }
                 }
             }
