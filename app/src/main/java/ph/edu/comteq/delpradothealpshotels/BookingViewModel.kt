@@ -33,15 +33,22 @@ class BookingViewModel(
             initialValue = emptyList()
         )
 
-    fun saveBooking(booking: Booking, onSaved: () -> Unit) {
-        performWrite {
+    fun saveBooking(
+        booking: Booking,
+        onSaved: () -> Unit,
+        onFailed: () -> Unit = {}
+    ) {
+        performWrite(onError = onFailed) {
             dao.insert(booking)
             _message.value = "Booking saved."
             onSaved()
         }
     }
 
-    private fun performWrite(action: suspend () -> Unit) {
+    private fun performWrite(
+        onError: () -> Unit = {},
+        action: suspend () -> Unit
+    ) {
         viewModelScope.launch {
             _message.value = null
 
@@ -51,6 +58,7 @@ class BookingViewModel(
                 throw e
             } catch (e: Exception) {
                 _message.value = "Could not save the change."
+                onError()
             }
         }
     }

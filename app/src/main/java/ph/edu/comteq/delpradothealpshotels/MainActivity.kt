@@ -115,8 +115,16 @@ class MainActivity : ComponentActivity() {
                         BookConfirmScreen(
                             hotelId = hotelId,
                             roomId = roomId,
-                            onBack = { navController.popBackStack() }
+                            onBack = { navController.popBackStack() },
+                            onBookingSaved = {
+                                navController.navigate("myBookings") {
+                                    popUpTo("bookConfirm/{hotelId}/{roomId}") { inclusive = true }
+                                }
+                            }
                         )
+                    }
+                    composable("myBookings") {
+                        Text("My Bookings")
                     }
                 }
             }
