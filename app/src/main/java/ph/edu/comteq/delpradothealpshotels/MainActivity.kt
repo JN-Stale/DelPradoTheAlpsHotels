@@ -96,8 +96,24 @@ class MainActivity : ComponentActivity() {
                         val hotelId = backStackEntry.arguments?.getInt("hotelId") ?: return@composable
                         BookScreen(
                             hotelId = hotelId,
-                            onBack = { navController.popBackStack() }
+                            onBack = { navController.popBackStack() },
+                            onRoomClick = { room ->
+                                navController.navigate("bookConfirm/$hotelId/${room.room_id}")
+                            }
                         )
+                    }
+                    composable(
+                        route = "bookConfirm/{hotelId}/{roomId}",
+                        arguments = listOf(
+                            navArgument("hotelId") { type = NavType.IntType },
+                            navArgument("roomId") { type = NavType.IntType }
+                        )
+                    ) { backStackEntry ->
+                        val hotelId = backStackEntry.arguments?.getInt("hotelId") ?: return@composable
+                        val roomId = backStackEntry.arguments?.getInt("roomId") ?: return@composable
+
+                        // Temporary placeholder.
+                        Text("Hotel $hotelId, Room $roomId")
                     }
                 }
             }
@@ -318,7 +334,8 @@ fun HotelCard(
 fun BookScreen(
     hotelId: Int,
     modifier: Modifier = Modifier,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    onRoomClick: (Room) -> Unit = {}
 ) {
     val context = LocalContext.current
     var details by remember { mutableStateOf<HotelDetails?>(null) }
@@ -516,7 +533,10 @@ fun BookScreen(
                         }
 
                         items(hotel.rooms) { room ->
-                            RoomCard(room = room)
+                            RoomCard(
+                                room = room,
+                                onRoomClick = { onRoomClick(room) }
+                            )
                         }
                     }
                 }
@@ -583,9 +603,11 @@ fun ReviewCard(
 @Composable
 fun RoomCard(
     room: Room,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onRoomClick: () -> Unit = {}
 ) {
     Card(
+        onClick = onRoomClick,
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
