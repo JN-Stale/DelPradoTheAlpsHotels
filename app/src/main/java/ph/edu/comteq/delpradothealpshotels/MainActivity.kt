@@ -28,6 +28,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.StarRate
+import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -85,6 +86,9 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.padding(innerPadding),
                                 onHotelClick = { hotel ->
                                     navController.navigate("booking/${hotel.hotel_id}")
+                                },
+                                onMyBookingsClick = {
+                                    navController.navigate("myBookings")
                                 }
                             )
                         }
@@ -124,7 +128,9 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("myBookings") {
-                        Text("My Bookings")
+                        MyBookingsScreen(
+                            onBack = { navController.popBackStack() }
+                        )
                     }
                 }
             }
@@ -135,7 +141,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Homepage(
     modifier: Modifier = Modifier,
-    onHotelClick: (Hotel) -> Unit = {}
+    onHotelClick: (Hotel) -> Unit = {},
+    onMyBookingsClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var hotels by remember { mutableStateOf(emptyList<Hotel>()) }
@@ -156,7 +163,8 @@ fun Homepage(
         modifier = modifier.fillMaxSize()
     ) {
         // Header Composable
-        Header()
+        // Header Composable
+        Header(onMyBookingsClick = onMyBookingsClick)
 
         // SearchBar Composable
         SearchBar(
@@ -178,7 +186,9 @@ fun Homepage(
 }
 
 @Composable
-fun Header() {
+fun Header(
+    onMyBookingsClick: () -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -210,6 +220,14 @@ fun Header() {
             contentDescription = "User Icon",
             modifier = Modifier.size(35.dp)
         )
+
+        IconButton(onClick = onMyBookingsClick) {
+            Icon(
+                imageVector = Icons.Outlined.Book,
+                contentDescription = "My Bookings",
+                modifier = Modifier.size(35.dp)
+            )
+        }
     }
 }
 
